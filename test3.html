@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mi Sitio Web | Navegación Desplegable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #f5f7fc 0%, #eef2f8 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #1e293b;
+        }
+
+        /* ENCABEZADO FIJO + SOMBRA */
+        .header {
+            background: #0f172a;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+
+        .header-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .logo-area h1 {
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff, #c084fc);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .logo-area p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* -------- MENÚ NAVEGACIÓN DESPLEGABLE (DROPDOWN) -------- */
+        .nav-menu ul {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item > a {
+            display: inline-block;
+            padding: 0.7rem 1.4rem;
+            background: transparent;
+            color: #f1f5f9;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 60px;
+            transition: all 0.25s ease;
+            font-size: 1rem;
+        }
+
+        .nav-item > a:hover {
+            background: #334155;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Submenú desplegable (dropdown) */
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1e293b;
+            min-width: 220px;
+            border-radius: 20px;
+            padding: 0.6rem 0;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+            z-index: 1050;
+            backdrop-filter: blur(4px);
+            border: 1px solid #334155;
+        }
+
+        /* Mostrar menú al pasar cursor sobre .nav-item */
+        .nav-item:hover .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(8px);
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.7rem 1.5rem;
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-content a:hover {
+            background: #334155;
+            border-left: 3px solid #c084fc;
+            color: white;
+        }
+
+        /* Página activa sutil */
+        .nav-item.active > a {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 8px rgba(59,130,246,0.3);
+        }
+
+        /* Contenido principal */
+        .main-content {
+            flex: 1;
+            max-width: 1300px;
+            width: 90%;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+
+        /* Estilos de página */
+        .page {
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }
+
+        .active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .page h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: #0f172a;
+            border-left: 6px solid #3b82f6;
+            padding-left: 1rem;
+        }
+
+        .page p {
+            line-height: 1.6;
+            margin: 1.2rem 0;
+            font-size: 1.05rem;
+            color: #1e293b;
+        }
+
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            flex: 1 1 240px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #cbd5e1;
+        }
+
+        .card h3 {
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 780px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-menu ul {
+                justify-content: center;
+            }
+            .dropdown-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                display: none;
+                background: #0f172a;
+                box-shadow: none;
+                border-radius: 16px;
+                margin-top: 5px;
+            }
+            /* Para móvil: al hacer click mostramos, pero mantenemos hover en desktop */
+            .nav-item:hover .dropdown-content {
+                display: block;
+            }
+            /* Mejor adaptación: los dropdowns se comportan como bloques en móvil si es necesario, pero manteniendo hover funcional */
+            .dropdown-content {
+                position: relative;
+                width: 100%;
+            }
+        }
+
+        button, .fake-link {
+            cursor: pointer;
+        }
+
+        .highlight {
+            background: #eef2ff;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-container">
+        <div class="logo-area">
+            <h1>✦ NexuraWeb</h1>
+            <p>Innovación & diseño desplegable</p>
+        </div>
+        <nav class="nav-menu" aria-label="Navegación principal">
+            <ul>
+                <!-- Página 1: Inicio -->
+                <li class="nav-item" id="nav-inicio">
+                    <a href="#" data-page="inicio">🏠 Inicio</a>
+                </li>
+                <!-- Página 2: Servicios CON menú desplegable (dropdown) -->
+                <li class="nav-item" id="nav-servicios">
+                    <a href="#" data-page="servicios">⚙️ Servicios</a>
+                    <div class="dropdown-content">
+                        <a href="#" data-subpage="consultoria">📊 Consultoría IT</a>
+                        <a href="#" data-subpage="desarrollo">💻 Desarrollo Web</a>
+                        <a href="#" data-subpage="marketing">📈 Marketing Digital</a>
+                        <a href="#" data-subpage="soporte">🛠️ Soporte 24/7</a>
+                    </div>
+                </li>
+                <!-- Página 3: Portafolio con dropdown secundario (ejemplo) -->
+                <li class="nav-item" id="nav-portafolio">
+                    <a href="#" data-page="portafolio">📁 Portafolio</a>
+                    <div class="dropdown-content">
+                        <a href="#" data-subpage="webapps">🌐 Aplicaciones Web</a>
+                        <a href="#" data-subpage="ecommerce">🛒 E-commerce</a>
+                        <a href="#" data-subpage="branding">🎨 Branding</a>
+                    </div>
+                </li>
+                <!-- Página 4: Contacto (sin submenú, pero estructura igual) -->
+                <li class="nav-item" id="nav-contacto">
+                    <a href="#" data-page="contacto">📞 Contacto</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="main-content">
+    <!-- PÁGINA 1: INICIO -->
+    <div id="page-inicio" class="page">
+        <h2>Bienvenido a NexuraWeb</h2>
+        <p>Somos una agencia digital enfocada en soluciones modernas, accesibles y con experiencias de usuario únicas. Navega por nuestro sitio usando el menú superior. Los menús <strong>desplegables</strong> se activan al pasar el cursor sobre “Servicios” y “Portafolio”. ¡Prueba a explorar las opciones!</p>
+        <div class="card-grid">
+            <div class="card">
+                <h3>🚀 Misión</h3>
+                <p>Transformar ideas en productos digitales de alto impacto.</p>
+            </div>
+            <div class="card">
+                <h3>💡 Visión</h3>
+                <p>Ser referentes en innovación y usabilidad en la web.</p>
+            </div>
+            <div class="card">
+                <h3>✨ Valores</h3>
+                <p>Compromiso, creatividad y tecnología de vanguardia.</p>
+            </div>
+        </div>
+        <p>Este sitio consta de 4 páginas principales (Inicio, Servicios, Portafolio, Contacto). Los menús desplegables ofrecen acceso rápido a subsecciones, y el encabezado es completamente consistente. Además, el diseño es responsive y el contenido cambia sin recargar la página (SPA intuitivo).</p>
+    </div>
+
+    <!-- PÁGINA 2: SERVICIOS (principal) -->
+    <div id="page-servicios" class="page">
+        <h2>Nuestros Servicios</h2>
+        <p>Ofrecemos un ecosistema completo de servicios tecnológicos. Puedes acceder a cada detalle usando el menú desplegable de "Servicios". Cada opción muestra información especializada.</p>
+        <div id="servicios-detail">
+            <!-- contenido por defecto se muestra al cargar página servicios principal -->
+            <div class="highlight" style="background:#e6f0ff; padding:1rem; border-radius:1rem;">
+                <p>🔍 <strong>Vista general:</strong> Desde desarrollo de software hasta consultoría estratégica. Selecciona una subcategoría en el menú desplegable “Servicios”.</p>
+            </div>
+            <div class="card-grid" style="margin-top:1rem;">
+                <div class="card"><h3>Consultoría IT</h3><p>Optimización de procesos y transformación digital.</p></div>
+                <div class="card"><h3>Desarrollo Web</h3><p>Frontend, backend, PWAs y SPAs de alto rendimiento.</p></div>
+                <div class="card"><h3>Marketing Digital</h3><p>SEO, SEM, social media y analítica de datos.</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 3: PORTAFOLIO -->
+    <div id="page-portafolio" class="page">
+        <h2>Portafolio Destacado</h2>
+        <p>Conoce algunos de nuestros proyectos recientes. Usa el menú desplegable de "Portafolio" para filtrar por categorías.</p>
+        <div id="portafolio-detail">
+            <div class="card-grid">
+                <div class="card"><h3>EcoShop</h3><p>Plataforma e-commerce sostenible con IA.</p><span>⭐ 4.9</span></div>
+                <div class="card"><h3>FinanceFlow</h3><p>Dashboard financiero interactivo en tiempo real.</p><span>⭐ 4.8</span></div>
+                <div class="card"><h3>StudioBrand</h3><p>Identidad visual y sitio para estudio creativo.</p><span>⭐ 5.0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PÁGINA 4: CONTACTO -->
+    <div id="page-contacto" class="page">
+        <h2>Contacto</h2>
+        <p>¿Tienes un proyecto en mente? Escríbenos, nuestro equipo te responderá a la brevedad.</p>
+        <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px,1fr));">
+            <div class="card">
+                <h3>📧 Email</h3>
+                <p>hola@nexuraweb.com</p>
+            </div>
+            <div class="card">
+                <h3>📞 Teléfono</h3>
+                <p>+34 911 234 567</p>
+            </div>
+            <div class="card">
+                <h3>📍 Oficina</h3>
+                <p>Madrid, España · Centro de Innovación</p>
+            </div>
+        </div>
+        <form id="contactForm" style="background: white; padding: 1.5rem; border-radius: 1.5rem; margin-top: 1rem;">
+            <div style="margin-bottom: 1rem;">
+                <label style="display:block; font-weight:600;">Nombre:</label>
+                <input type="text" placeholder="Tu nombre" style="width:100%; padding: 0.6rem; border-radius: 60px; border:1px solid #ccc;">
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <label style="display:block; font-weight:600;">Mensaje:</label>
+                <textarea rows="3" placeholder="Cuéntanos..." style="width:100%; border-radius: 20px; padding:0.6rem;"></textarea>
+            </div>
+            <button type="button" style="background:#3b82f6; border:none; color:white; padding:0.6rem 1.5rem; border-radius:40px; font-weight:bold; cursor:pointer;">Enviar consulta</button>
+            <small style="display:block; margin-top:8px;">Demo interactiva · formulario simulado</small>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <p>© 2025 NexuraWeb - Sitio de 4 páginas con menú desplegable (hover) | Diseño moderno y responsivo</p>
+</footer>
+
+<script>
+    // ---------- SISTEMA DE NAVEGACIÓN ENTRE 4 PÁGINAS PRINCIPALES + SUBPÁGINAS (dropdown dinámico) ----------
+    // Las subpáginas del menú dropdown actualizan el contenido dentro de la página actual (sin cambiar la página principal)
+    // Esto mantiene la coherencia: las páginas principales son Inicio, Servicios, Portafolio, Contacto.
+    // Además, el menú desplegable modifica detalles dentro de las páginas "Servicios" y "Portafolio".
+    // Se garantiza que el header y el menú son iguales para todas las secciones.
+    
+    // Elementos de páginas
+    const pages = {
+        inicio: document.getElementById('page-inicio'),
+        servicios: document.getElementById('page-servicios'),
+        portafolio: document.getElementById('page-portafolio'),
+        contacto: document.getElementById('page-contacto')
+    };
+    
+    // Items del menú principal (para resaltar)
+    const navItems = {
+        inicio: document.getElementById('nav-inicio'),
+        servicios: document.getElementById('nav-servicios'),
+        portafolio: document.getElementById('nav-portafolio'),
+        contacto: document.getElementById('nav-contacto')
+    };
+    
+    // Función para mostrar una página específica
+    function showPage(pageId) {
+        // Ocultar todas las páginas
+        Object.values(pages).forEach(page => {
+            if (page) page.classList.remove('active-page');
+        });
+        // Mostrar la página activa
+        if (pages[pageId]) {
+            pages[pageId].classList.add('active-page');
+        } else {
+            // fallback
+            pages.inicio.classList.add('active-page');
+        }
+        
+        // Actualizar clase activa en navegación principal (estilo visual)
+        Object.keys(navItems).forEach(key => {
+            const li = navItems[key];
+            if (li) {
+                if (key === pageId) {
+                    li.classList.add('active');
+                } else {
+                    li.classList.remove('active');
+                }
+            }
+        });
+        
+        // Guardar página actual en localStorage o atributo, pero no necesario
+        sessionStorage.setItem('currentPage', pageId);
+    }
+    
+    // ---------- CONTROL DE SUBPÁGINAS (dropdown) PARA SERVICIOS Y PORTAFOLIO ----------
+    // Definimos contenido dinámico para subsecciones sin crear páginas nuevas, enriqueciendo la experiencia.
+    const subpageContents = {
+        // subpáginas de servicios
+        consultoria: {
+            title: "Consultoría IT",
+            html: `<div class="highlight" style="background:#e0f2fe; padding:1rem; border-radius:1rem;">
+                        <h3>📊 Consultoría Estratégica</h3>
+                        <p>Análisis de infraestructura, adopción cloud, transformación ágil. Nuestros expertos te guían hacia la eficiencia operativa.</p>
+                        <ul><li>✅ Auditoría tecnológica</li><li>✅ Planes de migración</li><li>✅ Capacitación de equipos</li></ul>
+                    </div>
+                    <div class="card-grid" style="margin-top:1rem;">
+                        <div class="card">Metodologías ágiles</div>
+                        <div class="card">Arquitectura escalable</div>
+                    </div>`
+        },
+        desarrollo: {
+            title: "Desarrollo Web a Medida",
+            html: `<div class="highlight" style="background:#e6f7ec; padding:1rem; border-radius:1rem;">
+                        <h3>💻 Tecnologías modernas: React, Vue, Node, Python</h3>
+                        <p>Creamos sitios rápidos, accesibles y con UX impecable. Desde landing pages hasta aplicaciones empresariales.</p>
+                        <p><strong>Entregas continuas + soporte post-lanzamiento.</strong></p>
+                    </div>
+                    <div class="card-grid"><div class="card">Frontend interactivo</div><div class="card">Backend robusto</div></div>`
+        },
+        marketing: {
+            title: "Marketing Digital 360",
+            html: `<div class="highlight" style="background:#fff0e0; padding:1rem; border-radius:1rem;">
+                        <h3>📈 Aumenta tu visibilidad</h3>
+                        <p>Posicionamiento SEO/SEM, campañas en redes, email marketing y analítica avanzada.</p>
+                        <p>📊 Reportes personalizados y ROI medible.</p>
+                    </div>
+                    <div class="card"><h3>Casos de éxito</h3><p>+150% de tráfico orgánico en 6 meses.</p></div>`
+        },
+        soporte: {
+            title: "Soporte Técnico 24/7",
+            html: `<div class="highlight" style="background:#e9e9ff; padding:1rem; border-radius:1rem;">
+                        <h3>🛠️ Mesa de ayuda prioritaria</h3>
+                        <p>Monitorización continua, resolución de incidencias, mantenimiento proactivo. SLA garantizado.</p>
+                        <p>Chat en vivo y atención telefónica.</p>
+                    </div>
+                    <div class="card"><h3>Planes flexibles</h3><p>Desde soporte básico hasta enterprise.</p></div>`
+        },
+        // subpáginas de portafolio
+        webapps: {
+            title: "Aplicaciones Web",
+            html: `<div class="card-grid"><div class="card"><h3>TaskFlow</h3><p>App de gestión de proyectos colaborativa.</p><span>React + Node</span></div>
+                    <div class="card"><h3>MediCare+</h3><p>Portal de telemedicina con videollamadas.</p><span>Vue + Firebase</span></div>
+                    <div class="card"><h3>EduLearn</h3><p>Plataforma LMS interactiva.</p><span>NextJS</span></div></div>`
+        },
+        ecommerce: {
+            title: "E-commerce Solutions",
+            html: `<div class="card-grid"><div class="card"><h3>FashionStore</h3><p>Tienda online con pasarela de pagos y dashboard analytics.</p></div>
+                    <div class="card"><h3>GadgetShop</h3><p>Marketplace de electrónica con recomendaciones IA.</p></div>
+                    <div class="card"><h3>EcoMarket</h3><p>E-commerce sostenible + logística verde.</p></div></div>`
+        },
+        branding: {
+            title: "Branding & Identidad",
+            html: `<div class="highlight" style="background:#fef3c7;"><h3>🎨 Creamos marcas memorables</h3><p>Logotipos, manuales de marca, diseño de interfaces coherentes y estrategia de comunicación visual.</p></div>
+                    <div class="card-grid"><div class="card">Estudio de naming</div><div class="card">Diseño UX/UI</div><div class="card">Guías de estilo</div></div>`
+        }
+    };
+    
+    // Función para actualizar el contenido de la página de Servicios con subsección
+    function updateServiciosSubpage(subpageKey) {
+        const serviciosPage = pages.servicios;
+        if (!serviciosPage) return;
+        const data = subpageContents[subpageKey];
+        if (data) {
+            // Reemplazar el bloque de detalle manteniendo el título principal
+            const existingDetail = document.getElementById('servicios-detail');
+            if (existingDetail) {
+                existingDetail.innerHTML = data.html;
+                // además agregar un pequeño botón para volver a la vista general o mantener estilo
+                const backBtn = document.createElement('div');
+                backBtn.style.marginTop = "1rem";
+                backBtn.innerHTML = '<button id="resetServiciosView" style="background:#334155; border:none; color:white; padding:6px 16px; border-radius:40px; cursor:pointer;">↺ Ver todos los servicios</button>';
+                existingDetail.appendChild(backBtn);
+                document.getElementById('resetServiciosView')?.addEventListener('click', () => resetServiciosGeneral());
+            }
+            // También podemos modificar un pequeño subtítulo opcional
+            const h2 = serviciosPage.querySelector('h2');
+            if (h2 && !h2.innerHTML.includes('—')) h2.innerHTML = `Nuestros Servicios — ${data.title}`;
+        }
+    }
+    
+    function resetServiciosGeneral() {
+        const serviciosPage = pages.servicios;
+        if (!serviciosPage) return;
+        const detailDiv = document.getElementById('servicios-detail');
+        if (detailDiv) {
+            detailDiv.innerHTML = `<div class="highlight" style="background:#e6f0ff; padding:1rem; border-radius:1rem;">
+                                        <p>🔍 <strong>Vista general:</strong> Desde desarrollo de software hasta consultoría estratégica. Selecciona una subcategoría en el menú desplegable “Servicios”.</p>
+                                    </div>
+                                    <div class="card-grid" style="margin-top:1rem;">
+                                        <div class="card"><h3>Consultoría IT</h3><p>Optimización de procesos y transformación digital.</p></div>
+                                        <div class="card"><h3>Desarrollo Web</h3><p>Frontend, backend, PWAs y SPAs de alto rendimiento.</p></div>
+                                        <div class="card"><h3>Marketing Digital</h3><p>SEO, SEM, social media y analítica de datos.</p></div>
+                                    </div>`;
+        }
+        const h2 = serviciosPage.querySelector('h2');
+        if (h2) h2.innerHTML = `Nuestros Servicios`;
+    }
+    
+    function updatePortafolioSubpage(subpageKey) {
+        const portPage = pages.portafolio;
+        if (!portPage) return;
+        const data = subpageContents[subpageKey];
+        if (data) {
+            const detailPort = document.getElementById('portafolio-detail');
+            if (detailPort) {
+                detailPort.innerHTML = data.html + `<div style="margin-top:1rem;"><button id="resetPortafolioView" style="background:#334155; border:none; color:white; padding:6px 16px; border-radius:40px; cursor:pointer;">↺ Mostrar proyectos destacados</button></div>`;
+                document.getElementById('resetPortafolioView')?.addEventListener('click', () => resetPortafolioGeneral());
+            }
+            const h2 = portPage.querySelector('h2');
+            if (h2 && !h2.innerHTML.includes('—')) h2.innerHTML = `Portafolio — ${data.title}`;
+        }
+    }
+    
+    function resetPortafolioGeneral() {
+        const portPage = pages.portafolio;
+        if (portPage) {
+            const detailPort = document.getElementById('portafolio-detail');
+            if (detailPort) {
+                detailPort.innerHTML = `<div class="card-grid">
+                                            <div class="card"><h3>EcoShop</h3><p>Plataforma e-commerce sostenible con IA.</p><span>⭐ 4.9</span></div>
+                                            <div class="card"><h3>FinanceFlow</h3><p>Dashboard financiero interactivo en tiempo real.</p><span>⭐ 4.8</span></div>
+                                            <div class="card"><h3>StudioBrand</h3><p>Identidad visual y sitio para estudio creativo.</p><span>⭐ 5.0</span></div>
+                                        </div>`;
+            }
+            const h2 = portPage.querySelector('h2');
+            if (h2) h2.innerHTML = `Portafolio Destacado`;
+        }
+    }
+    
+    // ----- EVENTOS GLOBALES: CLIC EN ENLACES DE PÁGINA PRINCIPAL Y DROPDOWN -----
+    function attachNavEvents() {
+        // Enlaces principales (data-page)
+        document.querySelectorAll('.nav-item > a[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.getAttribute('data-page');
+                if (page && pages[page]) {
+                    showPage(page);
+                    // Si cambiamos a servicios o portafolio, aseguramos vista general (reset subvistas)
+                    if (page === 'servicios') resetServiciosGeneral();
+                    if (page === 'portafolio') resetPortafolioGeneral();
+                }
+            });
+        });
+        
+        // Eventos para subenlaces del menú desplegable (data-subpage)
+        document.querySelectorAll('.dropdown-content a[data-subpage]').forEach(subLink => {
+            subLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sub = subLink.getAttribute('data-subpage');
+                // Determinar a qué menú padre pertenece (si está dentro de servicios o portafolio)
+                const parentNav = subLink.closest('.nav-item');
+                if (parentNav) {
+                    const parentLink = parentNav.querySelector('> a');
+                    if (parentLink && parentLink.getAttribute('data-page') === 'servicios') {
+                        // Asegurar que la página actual es servicios
+                        if (pages.servicios && !pages.servicios.classList.contains('active-page')) {
+                            showPage('servicios');
+                        }
+                        updateServiciosSubpage(sub);
+                    } 
+                    else if (parentLink && parentLink.getAttribute('data-page') === 'portafolio') {
+                        if (pages.portafolio && !pages.portafolio.classList.contains('active-page')) {
+                            showPage('portafolio');
+                        }
+                        updatePortafolioSubpage(sub);
+                    }
+                }
+            });
+        });
+    }
+    
+    // Inicializar página por defecto (inicio)
+    function init() {
+        showPage('inicio');
+        attachNavEvents();
+        // Botón demo del formulario contacto
+        const contactBtn = document.querySelector('#contactForm button');
+        if (contactBtn) {
+            contactBtn.addEventListener('click', () => alert('📨 Demo: Mensaje enviado (simulación). Gracias por contactarnos.'));
+        }
+    }
+    
+    init();
+</script>
+</body>
+</html>
